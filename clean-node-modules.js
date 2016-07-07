@@ -21,10 +21,7 @@ if (program.path) {
   }
   else {
     handleDirectory(p);
-    rimraf(p, {disableGlob: true}, function(err) {
-      if (!err)
-        console.log(colors.green('Directory cleaned successfully!'));
-    });
+    cleanDirectory(p);
   }
 }
 else {
@@ -102,5 +99,10 @@ function isDir(p) {
 }
 
 function cleanDirectory(p) {
-  // body...
+  rimraf(p, {disableGlob: true}, function(err) {
+    if (!err)
+      console.log(colors.green('Directory cleaned successfully!'));
+    else
+      console.log(colors.red('Something went wrong! ' + err));
+  });
 }
