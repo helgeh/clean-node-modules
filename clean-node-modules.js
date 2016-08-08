@@ -15,9 +15,12 @@ var key = 0;
 var suffix = 0;
 
 if (program.path) {
-  var p = lookForNodeFolder(program.path);
+  var p = getNodeModulesDirectory(program.path);
   if (!p) {
-    showWarningAndExit();
+    showWarningAndExit(
+      'The supplied directory does not contain a \'node_modules\' directory.' +
+      '\nFor security reasons the directory will not get processed without it.'
+    );
   }
   else {
     handleDirectory(p);
@@ -28,20 +31,19 @@ else {
   program.help();
 }
 
-function lookForNodeFolder(p) {
-  if (p.indexOf('node_modules') >= 0) {
-    return p;
+function getNodeModulesDirectory(dir) {
+  if (dir.indexOf('node_modules') >= 0) {
+    return dir;
   }
-  else if (isDir(p)) {
-    var dirs = getDirs(p);
+  else if (isDirectory(dir)) {
+    var dirs = getSubDirectories(dir);
     if (dirs && dirs.length && dirs.indexOf('node_modules') >= 0)
-      return path.join(p, 'node_modules');
+      return path.join(dir, 'node_modules');
   }
   return false;
 }
 
-function showWarningAndExit() {
-  var msg = 'The supplied directory does not contain a \'node_modules\' directory.\nFor security reasons the directory will not get processed without it.';
+function showWarningAndExit(msg) {
   console.log(colors.red('!!!'));
   console.log(colors.red(msg));
   console.log(colors.red('!!!'));
@@ -52,30 +54,30 @@ function handleDirectory(dir) {
   var i, curDirs;
   key = 0;
   suffix = 0;
-  curDirs = renameDirs(dir, getDirs(dir));
+  curDirs = renameDirectories(dir, getSubDirectories(dir));
   for (i = 0; i < curDirs.length; i++) {
     handleDirectory(path.join(dir, curDirs[i]));
   }
 }
 
-function getDirs(dir) {
+function getSubDirectories(dir) {
   var dirs, p, files, i;
   files = fs.readdirSync(dir);
   dirs = [];
   for (i = 0; i < files.length; i++) {
     p = path.join(dir, files[i]);
-    if (isDir(p)) {
+    if (isDirectory(p)) {
       dirs.push(files[i]);
     }
   }
   return dirs;
 }
 
-function renameDirs(base, dirs) {
+function renameDirectories(base, dirs) {
   var i, cur;
   for (i = 0; i < dirs.length; i++) {
     cur = path.join(base, dirs[i]);
-    if (isDir(cur)) {
+    if (isDirectory(cur)) {
       dirs[i] = getNextKey();
       fs.renameSync(cur, path.join(base, dirs[i]));
     }
@@ -93,7 +95,7 @@ function getNextKey() {
   return newKey;
 }
 
-function isDir(p) {
+function isDirectory(p) {
   var stats = fs.statSync(p);
   return stats.isDirectory();
 }
