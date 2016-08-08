@@ -1,8 +1,12 @@
 {
-  "name": "clean-node-modules",
+  "name": "@helgeh/clean-node-modules",
   "version": "0.0.1",
   "description": "Purge old node_modules directories with paths too long in windows",
+  "private": true,
   "main": "clean-node-modules.js",
+  "bin": {
+    "clean-node-modules": "clean-node-modules.js"
+  },
   "author": {
     "name": "helge.hofstad@gmail.com"
   },
