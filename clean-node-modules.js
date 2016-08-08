@@ -80,7 +80,7 @@ function renameDirectories(base, dirs) {
     cur = path.join(base, dirs[i]);
     if (isDirectory(cur)) {
       dirs[i] = getNextKey();
-      fs.renameSync(cur, path.join(base, dirs[i]));
+      doRename(cur, path.join(base, dirs[i]));
     }
   }
   return dirs;
@@ -94,6 +94,19 @@ function getNextKey() {
   }
   newKey = keys[key++] + suffix.toString(10);
   return newKey;
+}
+
+function doRename(oldName, newName) {
+  try {
+    fs.renameSync(oldName, newName);
+  }
+  catch (e) {
+    if (e.code === 'EPERM' || e.code === 'EACCES') {
+      showWarningAndExit('Something iffy with permissions or access... Maybe an open explorer window under the folder in question?');
+    } else {
+      throw e;
+    }
+  }
 }
 
 function isDirectory(p) {
