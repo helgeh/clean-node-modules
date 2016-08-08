@@ -9,6 +9,7 @@ var colors = require('colors');
 program
   .usage('[options] <keywords>')
   .option('-p, --path [path]', 'Directory to start renaming process (must be or contain \'node_modules\')')
+  .option('-n, --noDelete', 'Prevent deleting. Script will only rename the folders and exit.')
   .parse(process.argv);
 
 var keys = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
@@ -25,7 +26,9 @@ if (program.path) {
   }
   else {
     handleDirectory(p);
-    cleanDirectory(p);
+    console.log('Done renaming!');
+    if (!program.noDelete)
+      cleanDirectory(p);
   }
 }
 else {
@@ -119,6 +122,6 @@ function cleanDirectory(p) {
     if (!err)
       console.log(colors.green('Directory cleaned successfully!'));
     else
-      console.log(colors.red('Something went wrong! ' + err));
+      console.log(colors.red('Something went wrong while deleting! ' + err));
   });
 }
