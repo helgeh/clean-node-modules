@@ -8,7 +8,8 @@
     "clean-node-modules": "clean-node-modules.js"
   },
   "author": {
-    "name": "helge.hofstad@gmail.com"
+    "name": "Helge Hofstad",
+    "email": "helge.hofstad@gmail.com"
   },
   "engines": {
     "node": ">=0.10"
